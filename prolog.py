@@ -31,7 +31,7 @@ def getActuatorValue(actuatorID):
 
 def saveNewPreference(name, typeID, Value, Actuators):
     if bool(checkPreferences(name, typeID))== False:
-        assertz("preferncesInstaces("+str(name)+", "+str(typeID)+", "+str(Value)+", "+str(Actuators)+")")
+        assertz("preferencesInstance("+str(name)+", "+str(typeID)+", "+str(Value)+", "+str(Actuators)+")")
         return True
     else : return False
 
@@ -73,7 +73,7 @@ def removeInstance(ID):
         query("remove_existing_fact(inside(" + ID + "))")
         check = True
     elif bool(checkPreferencesByName(ID)) == True:
-        query("remove_existing_fact(preferncesInstaces(" + ID + ",  _, _, _))")
+        query("remove_existing_fact(preferencesInstance(" + ID + ",  _, _, _))")
         check = True
     return check
         
@@ -127,7 +127,7 @@ def setPreference(PIId):
     query("set("+PIId+")")
     
 def getAllPreferences():
-    listQuery = query("preferncesInstaces(X, _, _, _)")
+    listQuery = query("preferencesInstance(X, _, _, _)")
     listOfPrefernces = set()
     for i in range(len(listQuery)):
         listOfPrefernces.add(listQuery[i]["X"])
@@ -135,11 +135,11 @@ def getAllPreferences():
     return listOfPrefernces
 
 def checkPreferencesByName(name):
-    return bool(query("preferncesInstaces("+name+", _, _, _)"))
+    return bool(query("preferencesInstance("+name+", _, _, _)"))
 
 
 def checkPreferences(name, typeID):
-    return bool(query("preferncesInstaces("+name+","+ typeID +", _, _)"))
+    return bool(query("preferencesInstance("+name+","+ typeID +", _, _)"))
 
 def getAllType():
     listQuery = query("propertyType(X)")

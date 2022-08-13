@@ -79,12 +79,12 @@ actuatorValue(window, 0).
 actuatorValue(roller_shutter, 0).
 
 
-%preferncesInstaces(PiiD, TypeId, ExpectedValueSensor, Actuators).
-:-dynamic(preferncesInstaces/4).
-preferncesInstaces(study, light, 20, [light_desk, mainLight,roller_shutter]).
-preferncesInstaces(study, temp, 24, [ac, window]).
-preferncesInstaces(nullPreference, _, 0, []).
-preferncesInstaces(study, noise, 0, [ac, window]).
+%preferencesInstance(PiiD, TypeId, ExpectedValueSensor, Actuators).
+:-dynamic(preferencesInstance/4).
+preferencesInstance(study, light, 20, [light_desk, mainLight,roller_shutter]).
+preferencesInstance(study, temp, 24, [ac, window]).
+preferencesInstance(nullPreference, _, 0, []).
+preferencesInstance(study, noise, 0, [ac, window]).
 
 
 %setInsideActuators(Actuators, Value).
@@ -164,7 +164,7 @@ set(PIId) :-  set(PIId, _).
 %set(PIId, TypeId).
 set(PIId, light) :- 
     sensorValue(brightness_outside, X),
-    preferncesInstaces(PIId, light, Y, Actuators),
+    preferencesInstance(PIId, light, Y, Actuators),
     X >= Y,
     !,
 	setOutsideActuators(Actuators, Y),
@@ -175,7 +175,7 @@ set(PIId, light) :-
     %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
 
 set(PIId, light) :- 
-    preferncesInstaces(PIId, light, Y, Actuators),
+    preferencesInstance(PIId, light, Y, Actuators),
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
     %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, Y)),
@@ -202,7 +202,7 @@ set(PIId, light) :-
             %ac = ON
 
 set(PIId, temp) :-
-    preferncesInstaces(PIId, temp, Y, Actuators),
+    preferencesInstance(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside < Y,
@@ -212,7 +212,7 @@ set(PIId, temp) :-
     %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
 set(PIId, temp) :-
-    preferncesInstaces(PIId, temp, Y, Actuators),
+    preferencesInstance(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside < Y,
@@ -229,7 +229,7 @@ set(PIId, temp) :-
             %window = aperta
 
 set(PIId, temp) :-
-    preferncesInstaces(PIId, temp, Y, Actuators),
+    preferencesInstance(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside > Y,
@@ -240,7 +240,7 @@ set(PIId, temp) :-
 
 
 set(PIId, temp) :-
-    preferncesInstaces(PIId, temp, Y, Actuators),
+    preferencesInstance(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside > Y,
