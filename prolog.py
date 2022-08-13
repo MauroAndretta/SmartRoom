@@ -30,7 +30,7 @@ def getActuatorValue(actuatorID):
     return query("actuatorValue(" + actuatorID +" ,X)")
 
 def saveNewPreference(name, typeID, Value, Actuators):
-    if bool(getPreferences(name, typeID))== False:
+    if bool(checkPreferences(name, typeID))== False:
         assertz("preferncesInstaces("+str(name)+", "+str(typeID)+", "+str(Value)+", "+str(Actuators)+")")
         return True
     else : return False
@@ -138,13 +138,8 @@ def checkPreferencesByName(name):
     return bool(query("preferncesInstaces("+name+", _, _, _)"))
 
 
-def getPreferences(typeID):
-    listQuery = query("preferncesInstaces(X, "+ typeID +", _, _)")
-    listOfPrefernces = set()
-    for i in range(len(listQuery)):
-        listOfPrefernces.add(listQuery[i]["X"])
-    
-    return listOfPrefernces
+def checkPreferences(name, typeID):
+    return bool(query("preferncesInstaces("+name+","+ typeID +", _, _)"))
 
 def getAllType():
     listQuery = query("propertyType(X)")

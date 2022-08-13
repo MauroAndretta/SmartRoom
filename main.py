@@ -261,7 +261,6 @@ class App(customtkinter.CTk):
     def button_remove_event(self):
         window_sensor = Remove()
         window_sensor.mainloop()        
-        
 
     def button_event(self):
         print("Button pressed")
@@ -286,14 +285,14 @@ class App(customtkinter.CTk):
         print(preference)
         if preference != "NoPreference":
             setPreference(preference)
-
+            self.refresh()
         
 
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-
     def on_closing(self, event=0):
         self.destroy()
+        
         
     def refresh(self):
         
@@ -301,34 +300,27 @@ class App(customtkinter.CTk):
         text1 = ""
         for k,v in actuators.items():
             text1 += str(k) + ": " + str(v[0])+ " "+  str(v[1]) +"\n"     
-        self.label_info_actuator_1 = customtkinter.CTkLabel(master=self.frame_info_actuator,
-                                                    text= text1,
-                                                    corner_radius=6,  # <- custom corner radius
-                                                    text_font=("Consolas", -12),
-                                                    justify=tkinter.LEFT)
-        self.label_info_actuator_1.grid(column=0, row=5, sticky="w", padx=5, pady=5)
-        
+        self.label_info_actuator_1.configure(text=text1)
+
         sensors = getAllSensor()
         print(sensors)
         text1 = ""
         for k,v in sensors.items():
             text1 += str(k) + ": " + str(v[0])+ " "+  str(v[1]) +"\n"
-        self.label_info_sensor_1 = customtkinter.CTkLabel(master=self.frame_info_sensor,
-                                                    text= text1,
-                                                    corner_radius=6,  # <- custom corner radius
-                                                    text_font=("Consolas", -12),  # <- custom tuple-color
-                                                    justify=tkinter.LEFT)
-        self.label_info_sensor_1.grid(column=0, row=3, sticky="w", padx=5, pady=5)
+        self.label_info_sensor_1.configure(text=text1)
+        
         setOfValues = getAllPreferences()
         values1 = []
         for e in setOfValues:
             values1.append(e)
         lastvalue = self.prefmenu.get()
-        self.prefmenu = customtkinter.CTkComboBox(master=self.frame_right,
-                                                        values=values1,
-                                                        command=self.change_prefernceMode)  
-        self.prefmenu.grid(row=1, column=2, pady=10, padx=20, sticky="we")
-        self.prefmenu.set(lastvalue)
+        
+        self.prefmenu.configure(values=values1) 
+        # customtkinter.CTkComboBox(master=self.frame_right,
+        #                                                 values=values1,
+        #                                                 command=self.change_prefernceMode)  
+        # self.prefmenu.grid(row=1, column=2, pady=10, padx=20, sticky="we")
+        # self.prefmenu.set(lastvalue)
 
 
 class Add_Sensor(customtkinter.CTk):
@@ -410,12 +402,16 @@ class Add_Sensor(customtkinter.CTk):
         
         if(setSensorType(nameSensor, typeSensor, location)):
             self.destroy()
+            app.refresh()
         else: 
             while(True):
                 dialog = customtkinter.CTkInputDialog(master=None, text="Sensor name already used, choose another one:", title="Error Name")
+                
+
                 name = dialog.get_input()
                 if(name!="" and setSensorType(name, typeSensor,location)):
                     self.destroy()
+                    app.refresh()
                     break
                     
             
@@ -501,12 +497,14 @@ class Add_Actuator(customtkinter.CTk):
         
         if(setActuatorType(nameActuator, typeActuator, location)):
             self.destroy()
+            app.refresh()
         else: 
             while(True):
                 dialog = customtkinter.CTkInputDialog(master=None, text="Actuator name already used, choose another one:", title="Error Name")
                 name = dialog.get_input()
                 if(name!="" and setActuatorType(name, typeActuator, location)):
                     self.destroy()
+                    app.refresh()
                     break
                     
 
@@ -619,6 +617,7 @@ class Modify_Actuator(customtkinter.CTk):
     def button_function(self):
         setActuatorValue(str(self.actuatormenu.get()), str(int(self.slider.get())))
         self.destroy()
+        app.refresh()
 
         
 
@@ -632,7 +631,7 @@ class Add_Preference(customtkinter.CTk):
 
     def __init__(self):
         super().__init__()
-        self.geometry("650x260")
+        self.geometry("650x560")
         self.title("ADD PREFERENCE")
 
         self.grid_rowconfigure(0, weight=1)
@@ -797,12 +796,14 @@ class Add_Preference(customtkinter.CTk):
         
         if(saveNewPreference(namePreference, self.property, self.slider.get(), acutatorsList)):
             self.destroy()
+            app.refresh()
         else: 
             while(True):
                 dialog = customtkinter.CTkInputDialog(master=None, text="Preference name already used, choose another one:", title="Error Name")
                 name = dialog.get_input()
                 if(name!="" and saveNewPreference(namePreference, self.property,int(self.slider.get()), acutatorsList)):
                     self.destroy()
+                    app.refresh()
                     break
         
             
@@ -939,6 +940,7 @@ class Remove(customtkinter.CTk):
         print(self.menu.get())
         if (removeInstance(self.menu.get())):
             self.destroy()
+            app.refresh()
                     
         
 
@@ -968,3 +970,5 @@ if __name__ == "__main__":
 
     app = App()
     app.mainloop()
+
+    

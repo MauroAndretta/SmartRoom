@@ -12,7 +12,7 @@ remove_existing_fact(OldFact) :-
 %propertyType(TypeId).
 propertyType(light).
 propertyType(temp).
-propertyType(position).
+propertyType(noise).
 
 %sensor(SensorId, TypeId).
 :-dynamic(sensor/2).
@@ -20,10 +20,9 @@ sensor(brightness, light).
 sensor(brightness_outside, light).
 sensor(temperature, temp).
 sensor(temperature_outside, temp).
-sensor(desk, position).
 sensor(monitor, light).
-sensor(bed, position).
-sensor(chair_desk, position).
+sensor(inside_noise, noise).
+sensor(outside_noise, noise).
 
 
 
@@ -33,9 +32,14 @@ sensorValue(brightness, 15).
 sensorValue(brightness_outside, 15).
 sensorValue(temperature, 10).
 sensorValue(temperature_outside, 8).
+sensorValue(inside_noise, 10).
+sensorValue(outside_noise, 20).
 
-%actuator(ActuatorId, TypeId).s
+
+%actuator(ActuatorId, TypeId).
 :-dynamic(actuator/2).
+actuator(X, noise) :-
+    actuator(X, temp).
 actuator(light_desk, light).
 actuator(mainLight, light).
 actuator(cornerLight, light).
@@ -43,6 +47,8 @@ actuator(ac, temp).
 actuator(monitor, light).
 actuator(window, temp).
 actuator(roller_shutter, light).
+
+
 
 %inside(Id).
 :-dynamic(inside/1).
@@ -77,8 +83,9 @@ actuatorValue(roller_shutter, 0).
 :-dynamic(preferncesInstaces/4).
 preferncesInstaces(study, light, 20, [light_desk, mainLight,roller_shutter]).
 preferncesInstaces(study, temp, 24, [ac, window]).
-preferncesInstaces(strunz, temp, 24, [ac, window]).
 preferncesInstaces(nullPreference, _, 0, []).
+preferncesInstaces(study, noise, 0, [ac, window]).
+
 
 %setInsideActuators(Actuators, Value).
 setInsideActuators([H|T], Y) :-
