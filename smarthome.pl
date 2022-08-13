@@ -4,6 +4,11 @@ replace_existing_fact(OldFact, NewFact) :-
     retract(OldFact),
     assertz(NewFact).
 
+
+remove_existing_fact(OldFact) :-
+    call(OldFact), 
+    retract(OldFact).
+
 %propertyType(TypeId).
 propertyType(light).
 propertyType(temp).
@@ -20,6 +25,8 @@ sensor(monitor, light).
 sensor(bed, position).
 sensor(chair_desk, position).
 
+
+
 %sensorValue(SensorId, Value).
 :-dynamic(sensorValue/2).
 sensorValue(brightness, 15).
@@ -27,7 +34,7 @@ sensorValue(brightness_outside, 15).
 sensorValue(temperature, 10).
 sensorValue(temperature_outside, 8).
 
-%actuator(ActuatorId, TypeId).
+%actuator(ActuatorId, TypeId).s
 :-dynamic(actuator/2).
 actuator(light_desk, light).
 actuator(mainLight, light).
@@ -36,6 +43,24 @@ actuator(ac, temp).
 actuator(monitor, light).
 actuator(window, temp).
 actuator(roller_shutter, light).
+
+%inside(Id).
+:-dynamic(inside/1).
+inside(brightness).
+inside(temperature).
+inside(desk).
+inside(monitor).
+inside(bed).
+inside(chair_desk).
+inside(light_desk).
+inside(mainLight).
+inside(cornerLight).
+inside(ac).
+inside(monitor).
+
+%outside(Id).
+outside(Id) :- 
+	\+ inside(Id).
 
 %actuatorValue(ActuatorId, Value).
 :-dynamic(actuatorValue/2).
@@ -49,29 +74,106 @@ actuatorValue(roller_shutter, 0).
 
 
 %preferncesInstaces(PiiD, TypeId, ExpectedValueSensor, Actuators).
-preferncesInstaces(study, light, 20, [light_desk, mainLight, roller_shutter]).
+:-dynamic(preferncesInstaces/4).
+preferncesInstaces(study, light, 20, [light_desk, mainLight,roller_shutter]).
 preferncesInstaces(study, temp, 24, [ac, window]).
 preferncesInstaces(strunz, temp, 24, [ac, window]).
+preferncesInstaces(nullPreference, _, 0, []).
+
+%setInsideActuators(Actuators, Value).
+setInsideActuators([H|T], Y) :-
+    extractInsideActuators([H|T], [], L),
+    setActuators(L, Y).
+
+%setOutsideActuators(Actuators, Value).
+setOutsideActuators([H|T], Y) :-
+    extractOutsideActuators([H|T], [], L),
+    setActuators(L, Y).
+
+%setActuators(Actuators, Value).
+setActuators([H|T], Y) :-
+    T \== [],
+    !,
+    setActuators(T, Y),
+	replace_existing_fact(actuatorValue(H,_), actuatorValue(H, Y)).
+
+%setActuators(Actuators, Value).
+setActuators([H|_], Y) :-
+    !,
+	replace_existing_fact(actuatorValue(H,_), actuatorValue(H, Y)).
+    
+
+%extractInsideActuators(List, NewList, variable).
+extractInsideActuators([H|T], L,X) :-
+    T \== [],
+    inside(H),
+    !,
+    extractInsideActuators(T, [H|L], X).
+
+extractInsideActuators([H|T], L, X) :-
+    T\== [],
+    \+ inside(H),
+    !,
+    extractInsideActuators(T, L, X).
+
+extractInsideActuators([H|_], L,X) :-
+    \+ inside(H),
+    !,
+    X = L.
+
+extractInsideActuators([H|_], L, X) :-
+    inside(H),
+    !,
+    X = [H|L].
+ 
+
+%extractOutsideActuators(List, NewList, variable).
+extractOutsideActuators([H|T], L,X) :-
+    T \== [],
+    outside(H),
+    !,
+    extractOutsideActuators(T, [H|L], X).
+
+extractOutsideActuators([H|T], L, X) :-
+    T\== [],
+    \+ outside(H),
+    !,
+    extractOutsideActuators(T, L, X).
+
+extractOutsideActuators([H|_], L,X) :-
+    \+ outside(H),
+    !,
+    X = L.
+
+extractOutsideActuators([H|_], L, X) :-
+    outside(H),
+    !,
+    X = [H|L].
+
 
 %set(PIId).
-set(study) :-  set(study, light), set(study, temp).
+set(PIId) :-  set(PIId, _).
 
 %set(PIId, TypeId).
-set(study, light) :- 
+set(PIId, light) :- 
     sensorValue(brightness_outside, X),
-    preferncesInstaces(study, light, Y, _),
+    preferncesInstaces(PIId, light, Y, Actuators),
     X >= Y,
     !,
-    replace_existing_fact(actuatorValue(roller_shutter,_), actuatorValue(roller_shutter, Y)),
-    replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, 0)),
-    replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, 0)),
-    replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
+	setOutsideActuators(Actuators, Y),
+	setInsideActuators(Actuators, 0).
+    %replace_existing_fact(actuatorValue(roller_shutter,_), actuatorValue(roller_shutter, Y)),
+    %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, 0)),
+    %replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, 0)),
+    %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
 
-set(study, light) :- 
-    preferncesInstaces(study, light, Y, _),
-    replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, Y)),
-    replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, Y)),
-    replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
+set(PIId, light) :- 
+    preferncesInstaces(PIId, light, Y, Actuators),
+	setOutsideActuators(Actuators, 0),
+	setInsideActuators(Actuators, Y).
+    %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, Y)),
+    %replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, Y)),
+    %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
 
 %-----------------------------------------------
     %temperatura dentro < desiderata
@@ -92,21 +194,25 @@ set(study, light) :-
         %fuori < desiderata 
             %ac = ON
 
-set(study, temp) :-
-    preferncesInstaces(study, temp, Y, _),
+set(PIId, temp) :-
+    preferncesInstaces(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside < Y,
     X_outside > Y,
-    replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
+	setOutsideActuators(Actuators, Y),
+	setInsideActuators(Actuators, 0).
+    %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
-set(study, temp) :-
-    preferncesInstaces(study, temp, Y, _),
+set(PIId, temp) :-
+    preferncesInstaces(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside < Y,
     X_outside < Y,
-    replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
+	setOutsideActuators(Actuators, 0),
+	setInsideActuators(Actuators, Y).
+    %replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
 
 
     %temperatura dentro > desiderata
@@ -115,24 +221,31 @@ set(study, temp) :-
         %fuori < desiderata 
             %window = aperta
 
-set(study, temp) :-
-    preferncesInstaces(study, temp, Y, _),
+set(PIId, temp) :-
+    preferncesInstaces(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside > Y,
     X_outside > Y,
-    replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
+	setOutsideActuators(Actuators, 0),
+	setInsideActuators(Actuators, Y).
+    %replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
 
 
-set(study, temp) :-
-    preferncesInstaces(study, temp, Y, _),
+set(PIId, temp) :-
+    preferncesInstaces(PIId, temp, Y, Actuators),
     sensorValue(temperature_outside, X_outside),
     sensorValue(temperature, X_inside),
     X_inside > Y,
     X_outside < Y,
-    replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
+	setOutsideActuators(Actuators, Y),
+	setInsideActuators(Actuators, 0).
+    %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
-
+save:-
+tell(gnegne),
+do_savings,
+told.
 
 
 
