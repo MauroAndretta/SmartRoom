@@ -64,7 +64,9 @@ def brightnessValue(skyinfo, time):
 
 def temperatureInsideHome(tempOutisde):
     temperatureInsideValue = int(tempOutisde) - random.randint(-10, 10) 
-    return temperatureInsideValue
+    if temperatureInsideValue < 0:
+        return 0
+    else: return temperatureInsideValue
     
 def decibelValue(wind):
     dbValue = 0
@@ -117,11 +119,11 @@ def weather(city):
 
 def simulateSensorValues():
 
-    fake = Faker()
-    city = fake.administrative_unit()
-    print(city)
+    # fake = Faker()
+    # city = fake.administrative_unit()
+    # print(city)
 
-    location,day,time,skyinfo,tempOutisde, wind =weather(city+ " weather")
+    location,day,time,skyinfo,tempOutisde, wind =weather("Bari"+ " weather")
     
     db = decibelValue(wind)
     temperatureInside = temperatureInsideHome(tempOutisde)

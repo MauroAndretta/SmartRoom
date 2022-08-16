@@ -21,9 +21,7 @@ sensor(brightness_outside, light).
 sensor(temperature, temp).
 sensor(temperature_outside, temp).
 sensor(monitor, light).
-sensor(inside_noise, noise).
 sensor(outside_noise, noise).
-
 
 
 %sensorValue(SensorId, Value).
@@ -32,7 +30,6 @@ sensorValue(brightness, 15).
 sensorValue(brightness_outside, 15).
 sensorValue(temperature, 10).
 sensorValue(temperature_outside, 8).
-sensorValue(inside_noise, 10).
 sensorValue(outside_noise, 20).
 
 
@@ -81,10 +78,20 @@ actuatorValue(roller_shutter, 0).
 
 %preferencesInstance(PiiD, TypeId, ExpectedValueSensor, Actuators).
 :-dynamic(preferencesInstance/4).
+preferencesInstance(nullPreference, _, 0, []).
 preferencesInstance(study, light, 20, [light_desk, mainLight,roller_shutter]).
 preferencesInstance(study, temp, 24, [ac, window]).
-preferencesInstance(nullPreference, _, 0, []).
-preferencesInstance(study, noise, 0, [ac, window]).
+preferencesInstance(study, noise, 10, [ac, window]).
+
+preferencesInstance(sleep, light, 0, [light_desk, cornerLight, mainLight,roller_shutter]).
+preferencesInstance(sleep, temp, 25, [ac, window]).
+preferencesInstance(sleep, noise, 10, [ac, window]).
+
+
+%preferencesInstance(movie, light, 0, [light_desk, mainLight,roller_shutter]).
+%preferencesInstance(movie, light, 15, [cornerLight]).
+%preferencesInstance(movie, temp, 25, [ac, window]).
+%preferencesInstance(movie, noise, 15, [ac, window]).
 
 
 %setInsideActuators(Actuators, Value).
@@ -166,7 +173,6 @@ set(PIId, light) :-
     sensorValue(brightness_outside, X),
     preferencesInstance(PIId, light, Y, Actuators),
     X >= Y,
-    !,
 	setOutsideActuators(Actuators, Y),
 	setInsideActuators(Actuators, 0).
     %replace_existing_fact(actuatorValue(roller_shutter,_), actuatorValue(roller_shutter, Y)),
@@ -175,7 +181,9 @@ set(PIId, light) :-
     %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
 
 set(PIId, light) :- 
+    sensorValue(brightness_outside, X),
     preferencesInstance(PIId, light, Y, Actuators),
+    X < Y,
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
     %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, Y)),
@@ -249,11 +257,17 @@ set(PIId, temp) :-
 	setInsideActuators(Actuators, 0).
     %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
-save:-
-tell(gnegne),
-do_savings,
-told.
+set(PIId, noise) :-
+    preferencesInstance(PIId, noise, Y_noise, Actuators),
+    sensorValue(outside_noise, X_noise_outside),
+    X_noise_outside > Y_noise,
+    sensorValue(temperature, X_temp_inside),
+    preferencesInstance(PIId, temp, Y_temp, Actuators),
+    X_temp_inside \== Y_temp,
+    setOutsideActuators(Actuators, 0),
+    setInsideActuators(Actuators, Y_temp).
 
+:- use_module(library(qsave)).
 
 
 

@@ -245,7 +245,7 @@ class App(customtkinter.CTk):
         # self.button_addActuator.configure(state="disabled", text="Disabled CTkButton")
         # self.combobox_1.set("CTkCombobox")
         # self.radio_button_1.select()
-        self.prefmenu.set("NoPreference")
+        self.prefmenu.set("nullPreference")
         # self.slider_1.set(0.2)
         # self.slider_2.set(0.7)
         # self.progressbar.set(0.5)
@@ -282,10 +282,8 @@ class App(customtkinter.CTk):
         window_preference.mainloop()
         
     def change_prefernceMode(self, preference):
-        print(preference)
-        if preference != "NoPreference":
-            setPreference(preference)
-            self.refresh()
+        setPreference(preference)
+        self.refresh()
         
 
     def change_appearance_mode(self, new_appearance_mode):
@@ -303,7 +301,6 @@ class App(customtkinter.CTk):
         self.label_info_actuator_1.configure(text=text1)
 
         sensors = getAllSensor()
-        print(sensors)
         text1 = ""
         for k,v in sensors.items():
             text1 += str(k) + ": " + str(v[0])+ " "+  str(v[1]) +"\n"
@@ -961,12 +958,12 @@ if __name__ == "__main__":
     setSensorValue("brightness_outside", str(brightness))
     setSensorValue("temperature", str(temperatureInside))
     setSensorValue("temperature_outside", str(tempOutisde))
-    
+    setSensorValue("outside_noise", str(db))
+
     actuators = getAllActuator()
 
     sensors = getAllSensor()
-    print(sensors)
-    
+
 
     app = App()
     app.mainloop()
