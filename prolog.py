@@ -8,7 +8,7 @@ def initialize():
     global prolog
     prolog = None
     prolog = Prolog()
-    prolog.consult("C:/Users/Mauro-Pc/Desktop/progetto/smarthome.pl")
+    prolog.consult("smarthome.pl")
 
     
 def assertz(cmd):
@@ -30,7 +30,7 @@ def getActuatorValue(actuatorID):
     return query("actuatorValue(" + actuatorID +" ,X)")
 
 def saveNewPreference(name, typeID, Value, Actuators):
-    if bool(checkPreferences(name, typeID))== False:
+    if bool(checkPreferencesWithActuator(name, typeID, Actuators))== False:
         assertz("preferencesInstance("+str(name)+", "+str(typeID)+", "+str(Value)+", "+str(Actuators)+")")
         return True
     else : return False
@@ -140,6 +140,18 @@ def checkPreferencesByName(name):
 
 def checkPreferences(name, typeID):
     return bool(query("preferencesInstance("+name+","+ typeID +", _, _)"))
+
+def checkPreferencesWithActuator(name, typeID, actuators):
+    listQuery = query("preferencesInstance("+name+","+ typeID +", _, X)")
+    for i in range(len(listQuery)):
+        for j in range(len(actuators)):
+            print(actuators[j])
+            print(listQuery[i]["X"])
+            if actuators[j] == listQuery[i]["X"]:
+                return True
+    return False
+    
+    
 
 def getAllType():
     listQuery = query("propertyType(X)")
