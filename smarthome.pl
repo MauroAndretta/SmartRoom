@@ -267,6 +267,11 @@ set(PIId, noise) :-
     setOutsideActuators(Actuators, 0),
     setInsideActuators(Actuators, Y_temp).
 
+%memberCheck(Element, List).
+memberCheck(H,[H|_]).
+memberCheck(H,[_|T]) :- memberCheck(H,T).
+
+
 :- use_module(library(qsave)).
 
 
