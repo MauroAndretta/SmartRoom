@@ -277,7 +277,6 @@ class App(customtkinter.CTk):
 
         
     def button_add_preference_event(self):
-        print("wowoow")
         window_preference = Add_Preference()
         window_preference.mainloop()
         
@@ -387,12 +386,9 @@ class Add_Sensor(customtkinter.CTk):
     def button_function(self):
         typeSensor = ""
         nameSensor = ""
-        print("button pressed")
         nameSensor = self.entry.get()
-        print(self.entry.get())
         typeSensor = self.typemenu.get()
         location = ""
-        print(self.typemenu.get())
         if (self.radio_var):
             location= "outside"
         else: location = "inside"
@@ -483,11 +479,8 @@ class Add_Actuator(customtkinter.CTk):
     def button_function(self):
         typeActuator = ""
         nameActuator = ""
-        print("button pressed")
         nameActuator = self.entry.get()
-        print(self.entry.get())
         typeActuator = self.typemenu.get()
-        print(self.typemenu.get())
         if (self.radio_var):
             location= "outside"
         else: location = "inside"
@@ -607,7 +600,6 @@ class Modify_Actuator(customtkinter.CTk):
         for val in tempDict:
             tempList.append(val)
         
-        print(tempList)
         self.actuatormenu = customtkinter.CTkComboBox(master=self.frame_1, values=tempList)  
         self.actuatormenu.grid(row=6, column=0,padx=20, pady=2, sticky="ew")
 
@@ -775,18 +767,15 @@ class Add_Preference(customtkinter.CTk):
         tempList = []
         for val in tempDict:
             tempList.append(val)
-        
-        print(tempList)
+
         self.actuatormenu = customtkinter.CTkComboBox(master=self.frame_1, values=tempList)  
         self.actuatormenu.grid(row=8, column=0,padx=20, pady=2, sticky="ew")
 
     def button_function(self):
 
         namePreference = ""
-        print("button pressed")
         namePreference = self.entry.get()
-        print(self.entry.get())
-        print(self.property)
+
         acutatorsList = []
         for val in self.actuatorChoosen:
             acutatorsList.append(val)
@@ -934,7 +923,6 @@ class Remove(customtkinter.CTk):
         
 
     def button_function(self):
-        print(self.menu.get())
         if (removeInstance(self.menu.get())):
             self.destroy()
             app.refresh()

@@ -142,14 +142,13 @@ def checkPreferences(name, typeID):
     return bool(query("preferencesInstance("+name+","+ typeID +", _, _)"))
 
 def checkPreferencesWithActuator(name, typeID, actuators):
-    listQuery = query("preferencesInstance("+name+","+ typeID +", _, X)")
-    for i in range(len(listQuery)):
-        for j in range(len(actuators)):
-            print(actuators[j])
-            print(listQuery[i]["X"])
-            if actuators[j] == listQuery[i]["X"]:
+    if type(actuators) == list:
+        for i in range(len(actuators)):
+            if(bool(query("preferencesInstance("+name+","+ typeID +", _, X), memberCheck("+actuators[i]+",X)"))) == True:
                 return True
-    return False
+        return False
+    else : return bool(query("preferencesInstance("+name+","+ typeID +", _, X), memberCheck("+actuators+",X)"))
+
     
     
 
