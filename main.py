@@ -809,6 +809,7 @@ class Remove(customtkinter.CTk):
         self.frame_1.grid_columnconfigure(0, weight=1)
         self.frame_1.grid_columnconfigure(1, weight=1)
         self.frame_1.grid_columnconfigure(2, weight=1)
+        self.frame_1.grid_columnconfigure(3, weight=1)
 
         # self.settings_image = self.load_image("/test_images/settings.png", 20)
         # self.bell_image = self.load_image("/test_images/bell.png", 20)
@@ -872,7 +873,7 @@ class Remove(customtkinter.CTk):
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
                                              text="Choose the actuator to remove",
                                              text_font=("Roboto Medium", -16))  # font name and size in px
-        self.label_2.grid(row=3, column=0,columnspan=2,padx=20, pady=(10, 2), sticky="ew")
+        self.label_2.grid(row=3, column=0,columnspan=3,padx=20, pady=(10, 2), sticky="ew")
         
         actuatorDict = getAllActuator()
         actuatorList = []
@@ -882,7 +883,7 @@ class Remove(customtkinter.CTk):
         
         self.menu = customtkinter.CTkComboBox(master=self.frame_1,
                                                         values=actuatorList)  
-        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew")
+        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew",columnspan=2)
 
         
     def radio_sensor_event(self):
@@ -890,7 +891,7 @@ class Remove(customtkinter.CTk):
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
                                              text="Choose the sensor to remove",
                                              text_font=("Roboto Medium", -16))  # font name and size in px
-        self.label_2.grid(row=3, column=0,columnspan=2,padx=20, pady=(10, 2), sticky="ew")
+        self.label_2.grid(row=3, column=0,columnspan=3,padx=20, pady=(10, 2), sticky="ew")
         
         sensorDict = getAllSensor()
         sensorList = []
@@ -900,7 +901,7 @@ class Remove(customtkinter.CTk):
         
         self.menu = customtkinter.CTkComboBox(master=self.frame_1,
                                                         values=sensorList)  
-        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew")
+        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew",columnspan=2)
 
         
     def radio_preference_event(self):
@@ -908,7 +909,7 @@ class Remove(customtkinter.CTk):
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
                                              text="Choose the preference to remove",
                                              text_font=("Roboto Medium", -16))  # font name and size in px
-        self.label_2.grid(row=3, column=0,columnspan=2,padx=20, pady=(10, 2), sticky="ew")
+        self.label_2.grid(row=3, column=0,columnspan=3,padx=20, pady=(10, 2), sticky="ew")
         
         preferenceDict = getAllPreferences()
         preferenceList = []
@@ -918,7 +919,7 @@ class Remove(customtkinter.CTk):
         preferenceList.remove("nullPreference")
         self.menu = customtkinter.CTkComboBox(master=self.frame_1,
                                                         values=preferenceList)  
-        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew")
+        self.menu.grid(row=4, column=0, padx=20, pady=2, sticky="ew",columnspan=2)
        
         
 

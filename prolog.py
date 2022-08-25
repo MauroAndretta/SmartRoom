@@ -9,7 +9,6 @@ def initialize():
     prolog = None
     prolog = Prolog()
     prolog.consult("smarthome.pl")
-
     
 def assertz(cmd):
     prolog.assertz(cmd)
