@@ -20,7 +20,6 @@ sensor(brightness, light).
 sensor(brightness_outside, light).
 sensor(temperature, temp).
 sensor(temperature_outside, temp).
-sensor(monitor, light).
 sensor(outside_noise, noise).
 
 
@@ -41,7 +40,6 @@ actuator(light_desk, light).
 actuator(mainLight, light).
 actuator(cornerLight, light).
 actuator(ac, temp).
-actuator(monitor, light).
 actuator(window, temp).
 actuator(roller_shutter, light).
 
@@ -52,14 +50,12 @@ actuator(roller_shutter, light).
 inside(brightness).
 inside(temperature).
 inside(desk).
-inside(monitor).
 inside(bed).
 inside(chair_desk).
 inside(light_desk).
 inside(mainLight).
 inside(cornerLight).
 inside(ac).
-inside(monitor).
 
 %outside(Id).
 outside(Id) :- 
@@ -71,7 +67,6 @@ actuatorValue(light_desk, 0).
 actuatorValue(mainLight, 0).
 actuatorValue(cornerLight, 0).
 actuatorValue(ac, 0).
-actuatorValue(monitor, 0).
 actuatorValue(window, 0).
 actuatorValue(roller_shutter, 0).
 
@@ -86,6 +81,10 @@ preferencesInstance(study, noise, 10, [ac, window]).
 preferencesInstance(sleep, light, 0, [light_desk, cornerLight, mainLight,roller_shutter]).
 preferencesInstance(sleep, temp, 25, [ac, window]).
 preferencesInstance(sleep, noise, 10, [ac, window]).
+
+preferencesInstance(turn_off, TypeId, 0, Actuators) :- setof(X, actuator(X,TypeId),Actuators).
+preferencesInstance(turn_on, TypeId, 100, Actuators) :- setof(X, actuator(X,TypeId),Actuators).
+
 
 preferencesInstance(movie, light, 15, [cornerLight]).
 preferencesInstance(movie, light, 0, [light_desk, mainLight]).
@@ -180,39 +179,13 @@ set(PIId, light) :-
     X >= Y,
 	setOutsideActuators(Actuators, Y),
 	setInsideActuators(Actuators, 0).
-    %replace_existing_fact(actuatorValue(roller_shutter,_), actuatorValue(roller_shutter, Y)),
-    %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, 0)),
-    %replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, 0)),
-    %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
-
+    
 set(PIId, light) :- 
     sensorValue(brightness_outside, X),
     preferencesInstance(PIId, light, Y, Actuators),
     X < Y,
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
-    %replace_existing_fact(actuatorValue(light_desk,_), actuatorValue(light_desk, Y)),
-    %replace_existing_fact(actuatorValue(mainLight,_), actuatorValue(mainLight, Y)),
-    %replace_existing_fact(actuatorValue(cornerLight,_), actuatorValue(cornerLight, 0)).
-
-%-----------------------------------------------
-    %temperatura dentro < desiderata
-        %fuori > desiderata 
-            %window = aperta
-        %fuori < desiderata 
-            %ac = ON
-    %temperatura dentro > desiderata
-        %fuori > desiderata
-            %ac = ON
-        %fuori < desiderata 
-            %window = aperta
-
-%--------
-    %temperatura dentro < desiderata
-        %fuori > desiderata 
-            %window = aperta
-        %fuori < desiderata 
-            %ac = ON
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
@@ -231,14 +204,6 @@ set(PIId, temp) :-
     X_outside < Y,
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
-    %replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
-
-
-    %temperatura dentro > desiderata
-        %fuori > desiderata
-            %ac = ON
-        %fuori < desiderata 
-            %window = aperta
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
@@ -248,8 +213,6 @@ set(PIId, temp) :-
     X_outside > Y,
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
-    %replace_existing_fact(actuatorValue(ac,_), actuatorValue(ac, Y)).
-
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
@@ -259,7 +222,6 @@ set(PIId, temp) :-
     X_outside < Y,
 	setOutsideActuators(Actuators, Y),
 	setInsideActuators(Actuators, 0).
-    %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
 set(PIId, noise) :-
     preferencesInstance(PIId, noise, Y_noise, Actuators),
@@ -274,14 +236,3 @@ set(PIId, noise) :-
 %memberCheck(Element, List).
 memberCheck(H,[H|_]).
 memberCheck(H,[_|T]) :- memberCheck(H,T).
-
-
-:- use_module(library(qsave)).
-
-
-
-
-	
-
-
-

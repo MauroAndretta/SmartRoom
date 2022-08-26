@@ -296,7 +296,7 @@ class App(customtkinter.CTk):
         actuators = getAllActuator()
         text1 = ""
         for k,v in actuators.items():
-            text1 += str(k) + ": " + str(v[0])+ " "+  str(v[1]) +"\n"     
+            text1 += str(k) + ": " + str(v[0])+ " "+  str(int(v[1])) +"\n"     
         self.label_info_actuator_1.configure(text=text1)
 
         sensors = getAllSensor()

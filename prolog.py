@@ -8,7 +8,7 @@ def initialize():
     global prolog
     prolog = None
     prolog = Prolog()
-    prolog.consult("smarthome.pl")
+    prolog.consult("smarthome.pl")   
     
 def assertz(cmd):
     prolog.assertz(cmd)
@@ -158,4 +158,3 @@ def getAllType():
         listOfType.add(listQuery[i]["X"])
     
     return listOfType
-        
