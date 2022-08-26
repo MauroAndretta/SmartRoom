@@ -75,10 +75,7 @@ def removeInstance(ID):
         query("remove_existing_fact(preferencesInstance(" + ID + ",  _, _, _))")
         check = True
     return check
-        
-
-    
-    
+           
     
 def getAllActuatorByType(typeID):
     actuatorList = query("actuator(X,"+ typeID + ")")
@@ -148,8 +145,6 @@ def checkPreferencesWithActuator(name, typeID, actuators):
         return False
     else : return bool(query("preferencesInstance("+name+","+ typeID +", _, X), memberCheck("+actuators+",X)"))
 
-    
-    
 
 def getAllType():
     listQuery = query("propertyType(X)")

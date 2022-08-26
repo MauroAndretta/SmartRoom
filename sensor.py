@@ -102,19 +102,6 @@ def weather(city):
     wind = soup.select('#wob_ws')[0].getText().strip()
     wind,_ = wind.split(" ")
 
-    # print("location", end =": ") 
-    # print(location)
-    # print("day", end =": ") 
-    # print(day)
-    # print("time", end =": ") 
-    # print(time)
-    # print("skyinfo", end =": ") 
-    # print(skyinfo)
-    # print("temperature", end =": ") 
-    # print(temperature)
-    # print("wind", end =": ") 
-    # print(wind)
-
     return location, day, time, skyinfo, temperature, wind
 
 def simulateSensorValues():
@@ -128,26 +115,6 @@ def simulateSensorValues():
     db = decibelValue(wind)
     temperatureInside = temperatureInsideHome(tempOutisde)
     brightness = brightnessValue(skyinfo, time)
-    
-    # print("location", end =": ")
-    # print(location)
-    # print("day", end =": ") 
-    # print(day)
-    # print("time", end =": ") 
-    # print(time)
-    # print("skyinfo", end =": ") 
-    # print(skyinfo)
-    # print("tempOutisde", end =": ") 
-    # print(tempOutisde)
-    # print("wind", end =": ") 
-    # print(wind)
-    # print("db", end =": ") 
-    # print(db)
-    # print("temperatureInside", end =": ") 
-    # print(temperatureInside)
-    # print("brightness", end =": ") 
-    # print(brightness)
-
-    
+   
     return location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness
 

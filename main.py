@@ -121,9 +121,6 @@ class App(customtkinter.CTk):
         self.label_info_1.grid(column=0, row=1, sticky="w", padx=5, pady=5)
  
 
-        # self.progressbar = customtkinter.CTkProgressBar(master=self.frame_info)
-        # self.progressbar.grid(row=2, column=0, sticky="ew", padx=15, pady=15)
-
         # ============ frame_info_sensor ============
         self.frame_info_sensor.rowconfigure(1, weight=1)
         self.frame_info_sensor.columnconfigure(0, weight=1)
@@ -180,58 +177,6 @@ class App(customtkinter.CTk):
                                                         command=self.change_prefernceMode)  
         self.prefmenu.grid(row=1, column=2, pady=10, padx=20, sticky="we")
 
-        # self.radio_button_1 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=0, text="Pref1")
-        # self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-
-        # self.radio_button_2 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=1, text="Pref2")
-        # self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-
-        # self.radio_button_3 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=2, text="Pref3")
-        # self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
-
-        # self.slider_1 = customtkinter.CTkSlider(master=self.frame_right,
-        #                                         from_=0,
-        #                                         to=1,
-        #                                         number_of_steps=3,
-        #                                         command=self.progressbar.set)
-        # self.slider_1.grid(row=4, column=0, columnspan=2, pady=10, padx=20, sticky="we")
-
-        # self.slider_2 = customtkinter.CTkSlider(master=self.frame_right,
-        #                                         from_=0,
-        #                                         to=1,
-        #                                         command=self.progressbar.set)
-        # self.slider_2.grid(row=5, column=0, columnspan=2, pady=10, padx=20, sticky="we")
-
-        # self.switch_1 = customtkinter.CTkSwitch(master=self.frame_right,
-        #                                         text="CTkSwitch")
-        # self.switch_1.grid(row=4, column=2, columnspan=1, pady=10, padx=20, sticky="we")
-
-        # self.switch_2 = customtkinter.CTkSwitch(master=self.frame_right,
-        #                                         text="CTkSwitch")
-        # self.switch_2.grid(row=5, column=2, columnspan=1, pady=10, padx=20, sticky="we")
-
-        # self.combobox_1 = customtkinter.CTkComboBox(master=self.frame_right,
-        #                                             values=["Value 1", "Value 2"])
-        # self.combobox_1.grid(row=6, column=2, columnspan=1, pady=10, padx=20, sticky="we")
-
-        # self.check_box_1 = customtkinter.CTkCheckBox(master=self.frame_right,
-        #                                              text="CTkCheckBox")
-        # self.check_box_1.grid(row=6, column=0, pady=0, padx=20, sticky="w")
-
-        # self.check_box_2 = customtkinter.CTkCheckBox(master=self.frame_right,
-        #                                              text="CTkCheckBox")
-        # self.check_box_2.grid(row=6, column=1, pady=0, padx=20, sticky="w")
-
-        # self.entry = customtkinter.CTkEntry(master=self.frame_right,
-        #                                     width=120,
-        #                                     placeholder_text="CTkEntry")
-        # self.entry.grid(row=8, column=0, columnspan=2, pady=0, padx=20, sticky="we")
 
         self.button_refresh = customtkinter.CTkButton(master=self.frame_right,
                                                 text="Refresh",
@@ -242,17 +187,6 @@ class App(customtkinter.CTk):
 
         # set default values
         self.optionmenu_1.set("Dark")
-        # self.button_addActuator.configure(state="disabled", text="Disabled CTkButton")
-        # self.combobox_1.set("CTkCombobox")
-        # self.radio_button_1.select()
-        # self.prefmenu.set("nullPreference")
-        # self.slider_1.set(0.2)
-        # self.slider_2.set(0.7)
-        # self.progressbar.set(0.5)
-        # self.switch_2.select()
-        # self.radio_button_3.configure(state=tkinter.DISABLED)
-        # self.check_box_1.configure(state=tkinter.DISABLED, text="CheckBox disabled")
-        # self.check_box_2.select()
         
     def button_modify_actuator_event(self):
         window_sensor = Modify_Actuator()
@@ -312,12 +246,6 @@ class App(customtkinter.CTk):
         lastvalue = self.prefmenu.get()
         
         self.prefmenu.configure(values=values1) 
-        # customtkinter.CTkComboBox(master=self.frame_right,
-        #                                                 values=values1,
-        #                                                 command=self.change_prefernceMode)  
-        # self.prefmenu.grid(row=1, column=2, pady=10, padx=20, sticky="we")
-        # self.prefmenu.set(lastvalue)
-
 
 class Add_Sensor(customtkinter.CTk):
     def __init__(self):
@@ -331,14 +259,6 @@ class Add_Sensor(customtkinter.CTk):
         self.frame_1.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
         self.frame_1.grid_columnconfigure(0, weight=1)
         self.frame_1.grid_columnconfigure(1, weight=1)
-
-        # self.settings_image = self.load_image("/test_images/settings.png", 20)
-        # self.bell_image = self.load_image("/test_images/bell.png", 20)
-        # self.add_folder_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_list_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_user_image = self.load_image("/test_images/add-user.png", 20)
-        # self.chat_image = self.load_image("/test_images/chat.png", 20)
-        # self.home_image = self.load_image("/test_images/home.png", 20)
         
         self.label_1 = customtkinter.CTkLabel(master=self.frame_1,
                                               text="Insert sensor name: ",
@@ -422,14 +342,6 @@ class Add_Actuator(customtkinter.CTk):
         self.frame_1.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
         self.frame_1.grid_columnconfigure(0, weight=1)
         self.frame_1.grid_columnconfigure(1, weight=1)
-
-        # self.settings_image = self.load_image("/test_images/settings.png", 20)
-        # self.bell_image = self.load_image("/test_images/bell.png", 20)
-        # self.add_folder_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_list_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_user_image = self.load_image("/test_images/add-user.png", 20)
-        # self.chat_image = self.load_image("/test_images/chat.png", 20)
-        # self.home_image = self.load_image("/test_images/home.png", 20)
         
         self.label_1 = customtkinter.CTkLabel(master=self.frame_1,
                                               text="Insert actuator name: ",
@@ -472,9 +384,6 @@ class Add_Actuator(customtkinter.CTk):
                                                 hover_color="#C77C78", command=self.button_function)
         self.button_5.grid(row=0, column=1, padx=20, pady=20)
 
-    # def load_image(self, path, image_size):
-    #     """ load rectangular image with path relative to PATH """
-    #     return ImageTk.PhotoImage(Image.open(PATH + path).resize((image_size, image_size)))
 
     def button_function(self):
         typeActuator = ""
@@ -512,13 +421,6 @@ class Modify_Actuator(customtkinter.CTk):
         self.frame_1.grid_columnconfigure(0, weight=1)
         self.frame_1.grid_columnconfigure(1, weight=1)
 
-        # self.settings_image = self.load_image("/test_images/settings.png", 20)
-        # self.bell_image = self.load_image("/test_images/bell.png", 20)
-        # self.add_folder_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_list_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_user_image = self.load_image("/test_images/add-user.png", 20)
-        # self.chat_image = self.load_image("/test_images/chat.png", 20)
-        # self.home_image = self.load_image("/test_images/home.png", 20)
         
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
                                              text="Value: ",
@@ -577,12 +479,7 @@ class Modify_Actuator(customtkinter.CTk):
                                                 corner_radius=10, compound="bottom", border_color="#D35B58", fg_color=("gray84", "gray25"),
                                                 hover_color="#C77C78", command=self.button_function)
         self.button_5.grid(row=0, column=1, padx=20, pady=10)
-        
-
-    # def load_image(self, path, image_size):
-    #     """ load rectangular image with path relative to PATH """
-    #     return ImageTk.PhotoImage(Image.open(PATH + path).resize((image_size, image_size)))
-    
+            
     def slider_event(self, value):
         self.label_slider = customtkinter.CTkLabel(master=self.frame_1,
                                              text=str(int(self.slider.get())),
@@ -608,13 +505,8 @@ class Modify_Actuator(customtkinter.CTk):
         self.destroy()
         app.refresh()
 
-        
-
-            
-           
+   
                      
-           
-                
 
 class Add_Preference(customtkinter.CTk):
 
@@ -631,14 +523,6 @@ class Add_Preference(customtkinter.CTk):
         self.frame_1.grid_columnconfigure(0, weight=1)
         self.frame_1.grid_columnconfigure(1, weight=1)
 
-        # self.settings_image = self.load_image("/test_images/settings.png", 20)
-        # self.bell_image = self.load_image("/test_images/bell.png", 20)
-        # self.add_folder_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_list_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_user_image = self.load_image("/test_images/add-user.png", 20)
-        # self.chat_image = self.load_image("/test_images/chat.png", 20)
-        # self.home_image = self.load_image("/test_images/home.png", 20)
-        
         self.label_1 = customtkinter.CTkLabel(master=self.frame_1,
                                               text="Insert preference name: ",
                                               text_font=("Roboto Medium", -16))  # font name and size in px
@@ -722,12 +606,7 @@ class Add_Preference(customtkinter.CTk):
                                                 corner_radius=10, compound="bottom", border_color="#D35B58", fg_color=("gray84", "gray25"),
                                                 hover_color="#C77C78", command=self.button_function)
         self.button_5.grid(row=0, column=1, padx=20, pady=10)
-        
 
-    # def load_image(self, path, image_size):
-    #     """ load rectangular image with path relative to PATH """
-    #     return ImageTk.PhotoImage(Image.open(PATH + path).resize((image_size, image_size)))
-    
     def slider_event(self, value):
         self.label_slider = customtkinter.CTkLabel(master=self.frame_1,
                                              text=str(int(self.slider.get())),
@@ -810,14 +689,6 @@ class Remove(customtkinter.CTk):
         self.frame_1.grid_columnconfigure(1, weight=1)
         self.frame_1.grid_columnconfigure(2, weight=1)
         self.frame_1.grid_columnconfigure(3, weight=1)
-
-        # self.settings_image = self.load_image("/test_images/settings.png", 20)
-        # self.bell_image = self.load_image("/test_images/bell.png", 20)
-        # self.add_folder_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_list_image = self.load_image("/test_images/add-folder.png", 20)
-        # self.add_user_image = self.load_image("/test_images/add-user.png", 20)
-        # self.chat_image = self.load_image("/test_images/chat.png", 20)
-        # self.home_image = self.load_image("/test_images/home.png", 20)
         
         self.label_1 = customtkinter.CTkLabel(master=self.frame_1,
                                               text="What to remove? ",
@@ -848,26 +719,13 @@ class Remove(customtkinter.CTk):
                                              text="",
                                              text_font=("Roboto Medium", -16))  # font name and size in px
         self.label_2.grid(row=3, column=0,columnspan=3,padx=20, pady=(10, 2), sticky="ew")
-        
-
-        # self.menu = customtkinter.CTkComboBox(master=self.frame_1,
-        #                                                 values=values1)  
-        # self.menu.grid(row=3, column=0, padx=20, pady=2, sticky="ew")
-        
-        # self.menu.set(values1[0])
-        
-        
+               
 
         self.button_5 = customtkinter.CTkButton(master=self,  text="Remove", width=130, height=60, border_width=2,
                                                 corner_radius=10, compound="bottom", border_color="#D35B58", fg_color=("gray84", "gray25"),
                                                 hover_color="#C77C78", command=self.button_function)
         self.button_5.grid(row=0, column=1, padx=20, pady=10)
-        
-
-    # def load_image(self, path, image_size):
-    #     """ load rectangular image with path relative to PATH """
-    #     return ImageTk.PhotoImage(Image.open(PATH + path).resize((image_size, image_size)))
-    
+            
     def radio_actuator_event(self):
         
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
