@@ -26,8 +26,8 @@ sensor(outside_noise, noise).
 
 %sensorValue(SensorId, Value).
 :-dynamic(sensorValue/2).
-sensorValue(brightness, 15).
-sensorValue(brightness_outside, 15).
+sensorValue(brightness, 0).
+sensorValue(brightness_outside, 0).
 sensorValue(temperature, 10).
 sensorValue(temperature_outside, 8).
 sensorValue(outside_noise, 20).
@@ -87,11 +87,10 @@ preferencesInstance(sleep, light, 0, [light_desk, cornerLight, mainLight,roller_
 preferencesInstance(sleep, temp, 25, [ac, window]).
 preferencesInstance(sleep, noise, 10, [ac, window]).
 
-
-%preferencesInstance(movie, light, 0, [light_desk, mainLight,roller_shutter]).
-%preferencesInstance(movie, light, 15, [cornerLight]).
-%preferencesInstance(movie, temp, 25, [ac, window]).
-%preferencesInstance(movie, noise, 15, [ac, window]).
+preferencesInstance(movie, light, 15, [cornerLight]).
+preferencesInstance(movie, light, 0, [light_desk, mainLight]).
+preferencesInstance(movie, temp, 25, [ac, window]).
+preferencesInstance(movie, noise, 15, [ac, window]).
 
 
 %setInsideActuators(Actuators, Value).
@@ -111,10 +110,11 @@ setActuators([H|T], Y) :-
     setActuators(T, Y),
 	replace_existing_fact(actuatorValue(H,_), actuatorValue(H, Y)).
 
-%setActuators(Actuators, Value).
 setActuators([H|_], Y) :-
     !,
 	replace_existing_fact(actuatorValue(H,_), actuatorValue(H, Y)).
+
+setActuators(_, _).
     
 
 %extractInsideActuators(List, NewList, variable).
@@ -139,6 +139,9 @@ extractInsideActuators([H|_], L, X) :-
     inside(H),
     !,
     X = [H|L].
+
+extractInsideActuators(_, L, X) :-
+    X = L.
  
 
 %extractOutsideActuators(List, NewList, variable).
@@ -164,6 +167,8 @@ extractOutsideActuators([H|_], L, X) :-
     !,
     X = [H|L].
 
+extractOutsideActuators(_, L, X) :-
+    X = L.
 
 %set(PIId).
 set(PIId) :-  set(PIId, _).
@@ -217,7 +222,6 @@ set(PIId, temp) :-
     X_outside > Y,
 	setOutsideActuators(Actuators, Y),
 	setInsideActuators(Actuators, 0).
-    %replace_existing_fact(actuatorValue(window,_), actuatorValue(window, Y)).
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
@@ -270,6 +274,7 @@ set(PIId, noise) :-
 %memberCheck(Element, List).
 memberCheck(H,[H|_]).
 memberCheck(H,[_|T]) :- memberCheck(H,T).
+
 
 :- use_module(library(qsave)).
 

@@ -245,7 +245,7 @@ class App(customtkinter.CTk):
         # self.button_addActuator.configure(state="disabled", text="Disabled CTkButton")
         # self.combobox_1.set("CTkCombobox")
         # self.radio_button_1.select()
-        self.prefmenu.set("nullPreference")
+        # self.prefmenu.set("nullPreference")
         # self.slider_1.set(0.2)
         # self.slider_2.set(0.7)
         # self.progressbar.set(0.5)
@@ -501,7 +501,7 @@ class Add_Actuator(customtkinter.CTk):
 class Modify_Actuator(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.geometry("650x520")
+        self.geometry("650x300")
         self.title("MODIFY ACTUATOR")
 
         self.grid_rowconfigure(0, weight=1)
@@ -521,7 +521,7 @@ class Modify_Actuator(customtkinter.CTk):
         # self.home_image = self.load_image("/test_images/home.png", 20)
         
         self.label_2 = customtkinter.CTkLabel(master=self.frame_1,
-                                             text="Preference Value: ",
+                                             text="Value: ",
                                              text_font=("Roboto Medium", -16))  # font name and size in px
         self.label_2.grid(row=1, column=0,columnspan=2,padx=20, pady=(10, 2), sticky="ew")
         
@@ -530,7 +530,7 @@ class Modify_Actuator(customtkinter.CTk):
                                                 from_=0,
                                                 to=100,
                                                 command=self.slider_event)
-        self.slider.grid(row=2, column=0, columnspan=4, pady=2, padx=10, sticky="we")
+        self.slider.grid(row=2, column=0, columnspan=1, pady=2, padx=10, sticky="we")
         self.slider.set(10)
         
         self.label_slider = customtkinter.CTkLabel(master=self.frame_1,
@@ -659,7 +659,7 @@ class Add_Preference(customtkinter.CTk):
                                                 from_=0,
                                                 to=100,
                                                 command=self.slider_event)
-        self.slider.grid(row=4, column=0, columnspan=4, pady=2, padx=10, sticky="we")
+        self.slider.grid(row=4, column=0, columnspan=1, pady=2, padx=10, sticky="we")
         self.slider.set(10)
         
         self.label_slider = customtkinter.CTkLabel(master=self.frame_1,
