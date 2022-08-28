@@ -6,14 +6,35 @@ prolog = None
 
 def initialize():
     global prolog
-    prolog = None
     prolog = Prolog()
+    print(prolog)
     prolog.consult("smarthome.pl")   
+    readFromFile()  
+    return prolog
     
+
+
+def writeToFile(query):
+    f = open("mylog.pl", "a")
+    f.write(query + "\n"  )
+    f.close()    
+    
+def readFromFile():
+    file = open("mylog.pl", "r")
+    for line in file:
+        print(line)
+        if "replace_existing_fact" in line:
+            list(prolog.query(str(line)))
+        else: list(prolog.assertz(str(line)))
+             
+
 def assertz(cmd):
     prolog.assertz(cmd)
+    writeToFile(cmd)
     
 def query(query):
+    if "replace_existing_fact" in query:
+        writeToFile(query)
     return list(prolog.query(query))
 
 def getSensorType(sensorID):

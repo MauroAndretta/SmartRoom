@@ -171,7 +171,7 @@ class App(customtkinter.CTk):
         setOfValues = getAllPreferences()
         values1 = []
         for e in setOfValues:
-            values1.append(e)
+            values1.append(str(e))
         self.prefmenu = customtkinter.CTkComboBox(master=self.frame_right,
                                                         values=values1,
                                                         command=self.change_prefernceMode)  
