@@ -7,7 +7,6 @@ prolog = None
 def initialize():
     global prolog
     prolog = Prolog()
-    print(prolog)
     prolog.consult("smarthome.pl")   
     readFromFile()  
     return prolog
@@ -159,6 +158,7 @@ def checkPreferences(name, typeID):
     return bool(query("preferencesInstance("+name+","+ typeID +", _, _)"))
 
 def checkPreferencesWithActuator(name, typeID, actuators):
+    
     if type(actuators) == list:
         for i in range(len(actuators)):
             if(bool(query("preferencesInstance("+name+","+ typeID +", _, X), memberCheck("+actuators[i]+",X)"))) == True:
