@@ -87,7 +87,7 @@ preferencesInstance(turn_on, TypeId, 100, Actuators) :- setof(X, actuator(X,Type
 
 
 preferencesInstance(movie, light, 15, [cornerLight,roller_shutter]).
-preferencesInstance(movie, light, 3, [light_desk, mainLight]).
+preferencesInstance(movie, light, 0, [light_desk, mainLight]).
 preferencesInstance(movie, temp, 25, [ac, window]).
 preferencesInstance(movie, noise, 15, [ac, window]).
 
