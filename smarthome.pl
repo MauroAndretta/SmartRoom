@@ -86,8 +86,8 @@ preferencesInstance(turn_off, TypeId, 0, Actuators) :- setof(X, actuator(X,TypeI
 preferencesInstance(turn_on, TypeId, 100, Actuators) :- setof(X, actuator(X,TypeId),Actuators).
 
 
-preferencesInstance(movie, light, 15, [cornerLight]).
-preferencesInstance(movie, light, 0, [light_desk, mainLight]).
+preferencesInstance(movie, light, 15, [cornerLight,roller_shutter]).
+preferencesInstance(movie, light, 3, [light_desk, mainLight]).
 preferencesInstance(movie, temp, 25, [ac, window]).
 preferencesInstance(movie, noise, 15, [ac, window]).
 
@@ -174,23 +174,32 @@ set(PIId) :-  set(PIId, _).
 
 %set(PIId, TypeId).
 set(PIId, light) :- 
-    sensorValue(brightness_outside, X),
+    sensor(SensorId_outside, light),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X),
     preferencesInstance(PIId, light, Y, Actuators),
     X >= Y,
 	setOutsideActuators(Actuators, Y),
 	setInsideActuators(Actuators, 0).
     
 set(PIId, light) :- 
-    sensorValue(brightness_outside, X),
+    sensor(SensorId_outside, light),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X),
     preferencesInstance(PIId, light, Y, Actuators),
     X < Y,
 	setOutsideActuators(Actuators, 0),
 	setInsideActuators(Actuators, Y).
 
+
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
-    sensorValue(temperature_outside, X_outside),
-    sensorValue(temperature, X_inside),
+    sensor(SensorId_outside, temp),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X_outside),
+    sensor(SensorId_inside, temp),
+    inside(SensorId_inside),
+    sensorValue(SensorId_inside, X_inside),
     X_inside < Y,
     X_outside > Y,
 	setOutsideActuators(Actuators, Y),
@@ -198,8 +207,12 @@ set(PIId, temp) :-
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
-    sensorValue(temperature_outside, X_outside),
-    sensorValue(temperature, X_inside),
+    sensor(SensorId_outside, temp),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X_outside),
+    sensor(SensorId_inside, temp),
+    inside(SensorId_inside),
+    sensorValue(SensorId_inside, X_inside),
     X_inside < Y,
     X_outside < Y,
 	setOutsideActuators(Actuators, 0),
@@ -207,8 +220,12 @@ set(PIId, temp) :-
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
-    sensorValue(temperature_outside, X_outside),
-    sensorValue(temperature, X_inside),
+    sensor(SensorId_outside, temp),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X_outside),
+    sensor(SensorId_inside, temp),
+    inside(SensorId_inside),
+    sensorValue(SensorId_inside, X_inside),
     X_inside > Y,
     X_outside > Y,
 	setOutsideActuators(Actuators, 0),
@@ -216,8 +233,12 @@ set(PIId, temp) :-
 
 set(PIId, temp) :-
     preferencesInstance(PIId, temp, Y, Actuators),
-    sensorValue(temperature_outside, X_outside),
-    sensorValue(temperature, X_inside),
+    sensor(SensorId_outside, temp),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X_outside),
+    sensor(SensorId_inside, temp),
+    inside(SensorId_inside),
+    sensorValue(SensorId_inside, X_inside),
     X_inside > Y,
     X_outside < Y,
 	setOutsideActuators(Actuators, Y),
@@ -225,9 +246,13 @@ set(PIId, temp) :-
 
 set(PIId, noise) :-
     preferencesInstance(PIId, noise, Y_noise, Actuators),
-    sensorValue(outside_noise, X_noise_outside),
+    sensor(SensorId_outside, noise),
+    outside(SensorId_outside),
+    sensorValue(SensorId_outside, X_noise_outside),
     X_noise_outside > Y_noise,
-    sensorValue(temperature, X_temp_inside),
+    sensor(SensorId_inside, temp),
+    inside(SensorId_inside),
+    sensorValue(SensorId_inside, X_temp_inside),
     preferencesInstance(PIId, temp, Y_temp, Actuators),
     X_temp_inside \== Y_temp,
     setOutsideActuators(Actuators, 0),
