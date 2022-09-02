@@ -21,16 +21,20 @@ def writeToFile(query):
 def readFromFile():
     file = open("mylog.pl", "r")
     for line in file:
+        line = line.replace(' ','')
         print(line)
-        if "set" in line:
-            list(prolog.query(str(line)))
-        elif "replace_existing_fact" in line:
-            list(prolog.query(str(line)))
-        elif "remove_existing_fact" in line:
-            list(prolog.query(str(line)))
-        else: list(prolog.assertz(str(line)))
+        if '\n'  != line and '' != line:           
+            if "set" in line:
+                list(prolog.query(str(line)))
+            elif "replace_existing_fact" in line:
+                list(prolog.query(str(line)))
+            elif "remove_existing_fact" in line:
+                list(prolog.query(str(line)))
+            else: 
+                prolog.assertz((str(line)))
+    print("ho finito di leggere i log")
     file.close()
-
+    
 def assertz(cmd):
     prolog.assertz(cmd)
     writeToFile(cmd)
@@ -54,12 +58,32 @@ def getSensorNameByType(typeId):
 def getActuatorType(actuatorID):
     return query("actuator(" + actuatorID +" ,X)")
 
+
+def getSensorNameByTypeAndLocation(typeId, location):
+    if location == "inside":
+        return getSensorNameByTypeInsideOnly(typeId)
+    elif location == "outside":
+        return getSensorNameByTypeOutsideOnly(typeId)
+
+def getSensorNameByTypeInsideOnly(typeId):
+    return query("sensor(X, "+typeId+"),inside(X)")
+
+
 def getSensorNameByTypeOutsideOnly(typeId):
-    query_list = query("sensor(X, "+typeId+"), outside(X)")
-    if len(query_list) == 1:
-        return str(query_list[0]["X"])
-    else: return query_list 
-        
+    return query("sensor(X, "+typeId+"), outside(X)")
+
+def getActuatorNameByTypeAndLocation(typeId, location):
+    if location == "inside":
+        return getActuatorNameByTypeInsideOnly(typeId)
+    elif location == "outside":
+        return getActuatorNameByTypeOutsideOnly(typeId)
+
+def getActuatorNameByTypeInsideOnly(typeId):
+    return query("actuator(X, "+typeId+"),inside(X)")
+
+
+def getActuatorNameByTypeOutsideOnly(typeId):
+    return query("actuator(X, "+typeId+"), outside(X)")
        
 
 def getSensorValue(sensorID):
@@ -101,10 +125,21 @@ def setSensorType(sensorID, typeID, location):
     else : return False
 
 def setSensorValue(sensorID, value):
-    query("replace_existing_fact(sensorValue(" + sensorID +" ,_), sensorValue(" + sensorID+ ", "+value+"))")
+    old_value = str(getSensorValue(sensorID))
+    query("replace_existing_fact(sensorValue(" + str(sensorID) +" ,"+str(old_value)+"), sensorValue(" + str(sensorID)+ ", "+str(value)+"))")
+    # query("replace_existing_fact(sensorValue(" + sensorID +" ,_), sensorValue(" + sensorID+ ", "+value+"))")
+    
+def setSensorValueByType(typeID, location, value):
+    list_sensor = getSensorNameByTypeAndLocation(typeID,location)
+    for i in range(len(list_sensor)):
+        name_sensor = list_sensor[i]['X']
+        setSensorValue(name_sensor,value)     
+    
 
 def setActuatorValue(actuatorID, value):
-    query("replace_existing_fact(actuatorValue(" + actuatorID +" ,_), actuatorValue(" + actuatorID+ ", "+value+"))")
+    old_value = str(getActuatorValue(actuatorID))
+    query("replace_existing_fact(actuatorValue(" + str(actuatorID) +" ,"+str(old_value)+"), actuatorValue(" + str(actuatorID)+ ", "+str(value)+"))")
+    # query("replace_existing_fact(actuatorValue(" + actuatorID +" ,_), actuatorValue(" + actuatorID+ ", "+value+"))")
 
 def removeInstance(ID):
     check = False
@@ -203,6 +238,20 @@ def getAllType():
     
     return listOfType
 
+def getPreviusValue(nameid):
+    for line in reversed(open("mylog.pl").readlines()):
+        print(line)
+        if "replace_existing_fact(" in line:
+            line = line.replace('replace_existing_fact(','')
+            line = line.split(',')
+            name = line[0][line[0].find("(")+1:len(line[0])]
+            name = name.replace(' ','')
+            if str(name) == str(nameid):
+                return line[1].replace(')','').replace(' ','')
+    return str(0)        
+        
+    
+
 def why(actuatorID):
     for line in reversed(open("mylog.pl").readlines()):
         if "replace_existing_fact" in line:
@@ -214,35 +263,35 @@ def why(actuatorID):
             if bool(list_prefrences):
                 answer = "The preference '" + preference_name + "' has modified the actuator's value '"+actuatorID+"' because:\n"
                 for i in range(len(list_prefrences)):
-                    
-                    print(i)
                     if i > 0 :
                         answer += "But this value has been replaced because:\n"
                     type_preference = list_prefrences[i]["Y"]
                     value_desired_preference = str(list_prefrences[i]["Desired"])
                     if type_preference == "temp":
-                        outside = getSensorValue("temperature_outside")
-                        inside = getSensorValue("temperature")
+                        name_sensor_outside = getSensorNameByTypeOutsideOnly(type_preference)[0]['X']
+                        value_outside = getSensorValue(name_sensor_outside)
+                        name_sensor_inside = getSensorNameByTypeInsideOnly(type_preference)[0]['X']
+                        value_inside = getPreviusValue(name_sensor_inside)
                         comparator_outside = "equal"
                         comparator_inside = "equal"
                         
-                        if int(outside) > int(value_desired_preference):
+                        if int(value_outside) > int(value_desired_preference):
                             comparator_outside = "higher"
-                        elif int(outside) < int(value_desired_preference):
+                        elif int(value_outside) < int(value_desired_preference):
                             comparator_outside = "lower"
                         
-                        if int(inside) > int(value_desired_preference):
+                        if int(value_inside) > int(value_desired_preference):
                             comparator_inside = "higher"
-                        elif int(inside) < int(value_desired_preference):
+                        elif int(value_inside) < int(value_desired_preference):
                             comparator_inside = "lower"
                             
-                        answer += "considirening the "+ type_preference + " and the related value of the sensor outside equal to\n'"
-                        answer += outside + "' which is "+comparator_outside+ " than the desired value equal to '" 
-                        answer += value_desired_preference + "'\n" + "and also considering that the value of the sensor inside \n'"
-                        answer += inside + "' is " + comparator_inside + " than the desired value,\n"+ "then the actuator '" 
+                        answer += "considirening the "+ type_preference + " and the related value of the sensor '" +name_sensor_outside+ "' equal to\n'"
+                        answer += value_outside + "' which is "+comparator_outside+ " than the desired value equal to '" 
+                        answer += value_desired_preference + "'\n" + "and also considering that the value of the sensor '"+ name_sensor_inside+ "' equal to\n'"
+                        answer += value_inside + "' is " + comparator_inside + " than the desired value,\n"+ "then the actuator '" 
                         answer += actuatorID + "' has been set to: '" + getActuatorValue(actuatorID) + "'.\n"        
                     else:     
-                        name_sensor = getSensorNameByTypeOutsideOnly(type_preference)
+                        name_sensor = getSensorNameByTypeOutsideOnly(type_preference)[0]['X']
                         value_sensor = getSensorValue(name_sensor)
                         
                         comparator= "equal"
@@ -251,14 +300,7 @@ def why(actuatorID):
                             comparator = "higher"
                         elif int(value_sensor) < int(value_desired_preference):
                             comparator = "lower"
-                            
-                        print(str(type_preference))
-                        print(str(name_sensor) )
-                        print(str(value_sensor))
-                        print(str(comparator))
-                        print(str(value_desired_preference))
-                        print(str(actuatorID))
-                        print(str(getActuatorValue(actuatorID)))
+                        
                         
                         answer += "considirening the " + str(type_preference) + " and the related value of the sensor '" + str(name_sensor) + "'"
                         answer += "\n" +"which has value equal to '" + str(value_sensor) + "' that is " + str(comparator) + " than the desired value for the prefrence,\n" + "that is '" 

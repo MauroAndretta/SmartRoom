@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-
+from prolog import * 
 import requests
 import random
 from faker import Faker
 from bs4 import BeautifulSoup
+
+
 
 def brightnessValue(skyinfo, time):
     weatherList_eng = [ "clear",
@@ -105,16 +107,80 @@ def weather(city):
     return location, day, time, skyinfo, temperature, wind
 
 def simulateSensorValues():
-
+    print("simulando i sensori")
     # fake = Faker()
     # city = fake.administrative_unit()
     # print(city)
 
     location,day,time,skyinfo,tempOutisde, wind =weather("Bari"+ " weather")
     
-    db = decibelValue(wind)
-    temperatureInside = temperatureInsideHome(tempOutisde)
-    brightness = brightnessValue(skyinfo, time)
+    db = int(decibelValue(wind))
+    temperatureInside = int(temperatureInsideHome(tempOutisde))
+    brightness = int(brightnessValue(skyinfo, time))
    
     return location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness
+
+# def changeSensorByPrefrence(preference):
+#     query_list = query("preferencesInstance("+preference+", Y, Desired, _)")
+#     print("cerco i sensori precedenti")
+#     print(query_list)
+#     if bool(query_list):
+#         for i in range(len(query_list)):
+#             if type(query_list[0]['Y']) == str:
+#                 print(query_list[0]['Y'])
+#                 if preference == "turn_off" :
+#                     location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness=getSensorsValues()
+#                     type_preference = query_list[i]['Y']
+#                     value_preference = query_list[i]['Desired']
+#                     location = "inside"
+#                     setSensorValueByType(type_preference,location,value_preference)
+#                     setSensorValueByType("temp", location, str(temperatureInside))
+#                 else:                    
+#                     type_preference = query_list[i]['Y']
+#                     value_preference = query_list[i]['Desired']
+#                     location = "inside"
+#                     setSensorValueByType(type_preference,location,value_preference)
+
+def changeSensorByActuators():
+    type_list = sorted(getAllType(), key=str.lower)
+    type_list.remove('noise')
+    for i in range(len(type_list)):
+        typeId = type_list[i]
+        #lista attuatori interni per il tipo
+        query_actuator_list = getActuatorNameByTypeAndLocation(typeId, "inside")
+        max_value = 0
+        for i in range(len(query_actuator_list)):
+            value = int(getActuatorValue(query_actuator_list[i]['X']))
+            if max_value < value:
+                max_value = value
+        #se nessun attuatore interno dovesse essere acceso allora prendo valore da fuori
+        if max_value == 0 :
+            query_actuator_list = getActuatorNameByTypeAndLocation(typeId, "outside")
+            max_value = 0
+            for i in range(len(query_actuator_list)):
+                value = int(getActuatorValue(query_actuator_list[i]['X']))
+                if max_value < value:
+                    max_value = value
+            value_sensor_outside = int(getSensorValue(getSensorNameByTypeAndLocation(typeId, "outside")[0]['X']))
+            if max_value > value_sensor_outside:
+                max_value = value_sensor_outside
+        
+        print(max_value)
+        if max_value == 0 and typeId == 'temp':
+            _,_,_,_,_,_,_,temperatureInside,_=getSensorsValues()
+            setSensorValueByType(typeId, "inside", str(temperatureInside))
+        else: setSensorValueByType(typeId,"inside",max_value)
+        
+        
+                    
+def newSensorValueByType(typeID, location):
+    query_list = getSensorNameByTypeAndLocation(typeID, location)
+    return getSensorValue(query_list[0]['X'])
+             
+def getSensorsValues():
+    print("restituendo i sensori")
+    return location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness
+
+
+location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness = simulateSensorValues()
 

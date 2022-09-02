@@ -191,11 +191,6 @@ class App(customtkinter.CTk):
         if set_found == False :
             self.prefmenu.set("nullPreference")
             
-            # if "remove_existing_fact(preferencesInstance(" in line:
-            #     removed_preference_name = line.replace('remove_existing_fact(preferencesInstance(','')
-            #     removed_preference_name = removed_preference_name.split(',')
-            #     removed_preference_name = removed_preference_name[0]
-            #     list_removed_preference.append(removed_preference_name)
 
 
         self.button_why = customtkinter.CTkButton(master=self.frame_right,
@@ -242,6 +237,7 @@ class App(customtkinter.CTk):
         
     def change_prefernceMode(self, preference):
         setPreference(preference)
+        print("cambio i sensori")
         self.refresh()
         
     def change_appearance_mode(self, new_appearance_mode):
@@ -254,6 +250,7 @@ class App(customtkinter.CTk):
         window_preference.mainloop()
     
     def refresh(self):
+        changeSensorByActuators()
         actuators = getAllActuator()
         text1 = ""
         for k,v in actuators.items():
@@ -311,7 +308,7 @@ class Add_Sensor(customtkinter.CTk):
         self.typemenu.set(values1[0])
         
         self.radio_var = tkinter.IntVar(value=0)
-        
+                
         self.radio_button_1 = customtkinter.CTkRadioButton(master=self.frame_1,
                                                             variable=self.radio_var,
                                                             value=0, text="Inside")
@@ -337,11 +334,11 @@ class Add_Sensor(customtkinter.CTk):
         nameSensor = str(self.entry.get()).lower().replace(" ", "_") 
         typeSensor = self.typemenu.get()
         location = ""
-        if (self.radio_var):
+        if (self.radio_var.get()):
             location= "outside"
         else: location = "inside"
-        
         if(setSensorType(nameSensor, typeSensor, location)):
+            setSensorValue(nameSensor, newSensorValueByType(typeSensor,location))
             self.destroy()
             app.refresh()
         else: 
@@ -350,6 +347,7 @@ class Add_Sensor(customtkinter.CTk):
                 
                 name = str(dialog.get_input()).lower().replace(" ", "_") 
                 if(name!="" and setSensorType(name, typeSensor,location)):
+                    setSensorValue(name, newSensorValueByType(typeSensor,location))
                     self.destroy()
                     app.refresh()
                     break
@@ -417,10 +415,10 @@ class Add_Actuator(customtkinter.CTk):
         nameActuator = ""
         nameActuator = str(self.entry.get()).lower().replace(" ", "_")
         typeActuator = self.typemenu.get()
-        if (self.radio_var):
+        if (self.radio_var.get()):
             location= "outside"
         else: location = "inside"
-        
+
         if(setActuatorType(nameActuator, typeActuator, location)):
             self.destroy()
             app.refresh()
@@ -432,6 +430,7 @@ class Add_Actuator(customtkinter.CTk):
                     self.destroy()
                     app.refresh()
                     break
+                
 class Why_Actuator(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -917,13 +916,13 @@ if __name__ == "__main__":
 
     from pyswip import Prolog
     initialize()
-    # location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness=simulateSensorValues()
+    location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness=getSensorsValues()
    
     
-    # setSensorValue("brightness_outside", str(brightness))
-    # setSensorValue("temperature", str(temperatureInside))
-    # setSensorValue("temperature_outside", str(tempOutisde))
-    # setSensorValue("outside_noise", str(db))
+    setSensorValue("brightness_outside", str(brightness))
+    setSensorValue("temperature", str(temperatureInside))
+    setSensorValue("temperature_outside", str(tempOutisde))
+    setSensorValue("outside_noise", str(db))
 
     actuators = getAllActuator()
 
