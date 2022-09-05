@@ -1,6 +1,6 @@
-# FAII
+#1 FAII
 
-pip install customtkinter
-pip install pyswip
-install https://www.swi-prolog.org/Download.html
-pip install faker
+1. pip install customtkinter
+2. pip install pyswip
+3. install https://www.swi-prolog.org/Download.html
+4. pip install faker
