@@ -1,6 +1,6 @@
 ## FAII
 
-### H3 Python library required
+### Python library required
 1. pip install tk
 2. pip install customtkinter
 3. pip install pyswip
