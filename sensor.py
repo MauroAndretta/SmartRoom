@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from prolog import * 
 import requests
 import random
-from faker import Faker
 from bs4 import BeautifulSoup
 
 
@@ -108,10 +106,6 @@ def weather(city):
 
 def simulateSensorValues():
     print("simulando i sensori")
-    # fake = Faker()
-    # city = fake.administrative_unit()
-    # print(city)
-
     location,day,time,skyinfo,tempOutisde, wind =weather("Bari"+ " weather")
     db = int(decibelValue(wind))
     temperatureInside = int(temperatureInsideHome(tempOutisde))

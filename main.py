@@ -110,11 +110,6 @@ class App(customtkinter.CTk):
                                                     "day: " + str(day)+" \n" +
                                                     "time: " + str(time)+" \n" +
                                                     "skyinfo: " + str(skyinfo)+" \n",
-                                                    # "tempOutisde: " + str(tempOutisde)+" \n" +
-                                                    # "wind: " + str(wind)+" \n" +
-                                                    # "db: " + str(db)+" \n" +
-                                                    # "temperatureInside: " + str(temperatureInside)+" \n" +
-                                                    # "brightness: " + str(brightness)+" \n" ,
                                                    corner_radius=6,  # <- custom corner radius
                                                    text_font=("Consolas", -12),
                                                    justify=tkinter.LEFT)
@@ -181,9 +176,6 @@ class App(customtkinter.CTk):
         self.prefmenu.grid(row=1, column=2, pady=10, padx=20, sticky="we")
         
         
-        
-        
-        # list_removed_preference = []
         set_found = False
         for line in reversed(open("mylog.pl").readlines()):
             if "set" in line:
@@ -810,11 +802,9 @@ class Add_Preference(customtkinter.CTk):
         if bool(acutatorsList) and namePreference != "":
             check_dict = checkInsideAndOutsideInList(acutatorsList)
             if check_dict["inside"] == False  and self.preference_warning == False:
-                # dialog = customtkinter.CTkInputDialog(master=None, text="You've not selected an inside actuator,\nyour goal couldn't be reached", title="Warning Goal")
                 self.preference_warning = True
                 self.popupBonus("You've not selected an inside actuator,\nyour goal couldn't be reached")
             elif check_dict["outside"] == False and self.preference_warning == False :
-                # dialog = customtkinter.CTkInputDialog(master=None, text="You've not selected an outside actuator,\nyour goal couldn't be reached", title="Warning Goal")
                 self.preference_warning = True
                 self.popupBonus("You've not selected an outisde actuator,\nyour goal couldn't be reached")
             else :

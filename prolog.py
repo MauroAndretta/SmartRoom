@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from pyswip import Prolog
 
 global prolog
