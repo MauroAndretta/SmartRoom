@@ -7,7 +7,8 @@ prolog = None
 def initialize():
     global prolog
     prolog = Prolog()
-    prolog.consult("smarthome.pl")   
+    prolog.consult("smarthome_facts.pl")   
+    prolog.consult("smarthome_rules.pl")   
     readFromFile()  
   
 
@@ -98,9 +99,21 @@ def getActuatorValue(actuatorID):
     if len(query_list) == 1:
         return str(query_list[0]["X"])
     else: return query_list 
+    
+def checkInsideAndOutsideInList(List):
+    dict_check = {}
+    dict_check["inside"]= False
+    dict_check["outside"]= False
+    for element in List:
+        if bool(query("inside("+element+")")):
+            dict_check["inside"]= True
+        elif bool(query("outside("+element+")")):
+            dict_check["outside"]= True
+    return dict_check   
+        
 
 def saveNewPreference(name, typeID, Value, Actuators):
-    if bool(checkPreferencesWithActuator(name, typeID, Actuators))== False:
+    if bool(checkPreferencesWithActuator(name, typeID, Actuators))== False :
         assertz("preferencesInstance("+str(name)+", "+str(typeID)+", "+str(Value)+", "+str(Actuators)+")")
         return True
     else : return False
@@ -240,7 +253,6 @@ def getAllType():
 
 def getPreviusValue(nameid):
     for line in reversed(open("mylog.pl").readlines()):
-        print(line)
         if "replace_existing_fact(" in line:
             line = line.replace('replace_existing_fact(','')
             line = line.split(',')

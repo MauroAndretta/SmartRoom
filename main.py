@@ -169,7 +169,12 @@ class App(customtkinter.CTk):
         
         
         setOfValues = getAllPreferences()
-        setOfValues = sorted(setOfValues, key=str.lower)
+        list_preference = []
+        for element in setOfValues:
+            list_preference.append(str(element))
+           
+        setOfValues = sorted(list_preference, key=str.lower)
+        
         self.prefmenu = customtkinter.CTkComboBox(master=self.frame_right,
                                                         values=setOfValues,
                                                         command=self.change_prefernceMode)  
@@ -264,7 +269,11 @@ class App(customtkinter.CTk):
         self.label_info_sensor_1.configure(text=text1)
         
         setOfValues = getAllPreferences()
-        setOfValues = sorted(setOfValues, key=str.lower)
+        list_preference = []
+        for element in setOfValues:
+            list_preference.append(str(element))
+           
+        setOfValues = sorted(list_preference, key=str.lower)
         
         lastvalue = str(self.prefmenu.get())
         self.prefmenu.configure(values=setOfValues) 
@@ -337,22 +346,22 @@ class Add_Sensor(customtkinter.CTk):
         if (self.radio_var.get()):
             location= "outside"
         else: location = "inside"
-        if(setSensorType(nameSensor, typeSensor, location)):
-            setSensorValue(nameSensor, newSensorValueByType(typeSensor,location))
-            self.destroy()
-            app.refresh()
-        else: 
-            while(True):
-                dialog = customtkinter.CTkInputDialog(master=None, text="Sensor name already used \n choose another one:", title="Error Name")
-                
-                name = str(dialog.get_input()).lower().replace(" ", "_") 
-                if(name!="" and setSensorType(name, typeSensor,location)):
-                    setSensorValue(name, newSensorValueByType(typeSensor,location))
-                    self.destroy()
-                    app.refresh()
-                    break
+        if nameSensor != "":
+            if(setSensorType(nameSensor, typeSensor, location)):
+                setSensorValue(nameSensor, newSensorValueByType(typeSensor,location))
+                self.destroy()
+                app.refresh()
+            else: 
+                while(True):
+                    dialog = customtkinter.CTkInputDialog(master=None, text="Sensor name already used \n choose another one:", title="Error Name")
                     
-            
+                    name = str(dialog.get_input()).lower().replace(" ", "_") 
+                    if(name!="" and name!="none" and setSensorType(name, typeSensor,location)):
+                        setSensorValue(name, newSensorValueByType(typeSensor,location))
+                        self.destroy()
+                        app.refresh()
+                        break
+                                
 
 class Add_Actuator(customtkinter.CTk):
     def __init__(self):
@@ -418,18 +427,19 @@ class Add_Actuator(customtkinter.CTk):
         if (self.radio_var.get()):
             location= "outside"
         else: location = "inside"
-
-        if(setActuatorType(nameActuator, typeActuator, location)):
-            self.destroy()
-            app.refresh()
-        else: 
-            while(True):
-                dialog = customtkinter.CTkInputDialog(master=None, text="Actuator name already used \n Choose another one:", title="Error Name")
-                name = str(dialog.get_input()).lower().replace(" ", "_") 
-                if(name!="" and setActuatorType(name, typeActuator, location)):
-                    self.destroy()
-                    app.refresh()
-                    break
+        
+        if nameActuator != "":
+            if(setActuatorType(nameActuator, typeActuator, location)):
+                self.destroy()
+                app.refresh()
+            else: 
+                while(True):
+                    dialog = customtkinter.CTkInputDialog(master=None, text="Actuator name already used \n Choose another one:", title="Error Name")
+                    name = str(dialog.get_input()).lower().replace(" ", "_") 
+                    if(name!="" and name!="none" and setActuatorType(name, typeActuator, location)):
+                        self.destroy()
+                        app.refresh()
+                        break
                 
 class Why_Actuator(customtkinter.CTk):
     def __init__(self):
@@ -622,7 +632,28 @@ class Modify_Actuator(customtkinter.CTk):
         app.refresh()
 
    
-                     
+class Popup(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+        self.geometry("370x200")
+        self.title("Warning")    
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, minsize=200)
+        self.frame_1 = customtkinter.CTkFrame(master=self, width=00, height=240, corner_radius=15)
+        self.frame_1.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+        self.frame_1.grid_columnconfigure(0, weight=1)
+        self.frame_1.grid_columnconfigure(1, weight=1)
+        self.label_1 = customtkinter.CTkLabel(master=self.frame_1,
+                                              text="You've not selected an inside or outside actuator,\nyour goal couldn't be reached",
+                                              text_font=("Roboto Medium", -12))  # font name and size in px
+        self.label_1.grid(row=0, column=0,columnspan=2,padx=20, pady=30, sticky="enw")
+        self.button_property = customtkinter.CTkButton(master=self.frame_1,
+                                                text="Okay",
+                                                command=self.destroy)
+
+        self.button_property.grid(row=1, column=0, columnspan=2, padx=20, pady=50,sticky="esw")
+        
+                       
 
 class Add_Preference(customtkinter.CTk):
 
@@ -722,6 +753,7 @@ class Add_Preference(customtkinter.CTk):
                                                 corner_radius=10, compound="bottom", border_color="#D35B58", fg_color=("gray84", "gray25"),
                                                 hover_color="#C77C78", command=self.button_function)
         self.button_5.grid(row=0, column=1, padx=20, pady=10)
+        self.preference_warning = False
 
     def slider_event(self, value):
         self.label_slider = customtkinter.CTkLabel(master=self.frame_1,
@@ -769,25 +801,38 @@ class Add_Preference(customtkinter.CTk):
     def button_function(self):
 
         namePreference = ""
-        namePreference = str(self.entry.get()).lower().replace(" ", "_") 
+        namePreference = str(str(self.entry.get())).lower().replace(" ", "_") 
         
 
         acutatorsList = []
         for val in self.actuatorChoosen:
             acutatorsList.append(val)
-        
-        if(saveNewPreference(namePreference, self.property, str(int(self.slider.get())), acutatorsList)):
-            self.destroy()
-            app.refresh()
-        else: 
-            while(True):
-                dialog = customtkinter.CTkInputDialog(master=None, text="Preference name already used \n choose another one:", title="Error Name")
-                name = str(dialog.get_input()).lower().replace(" ", "_") 
-                if(name!="" and saveNewPreference(name, self.property,str(int(self.slider.get())), acutatorsList)):
+        if bool(acutatorsList) and namePreference != "":
+            check_dict = checkInsideAndOutsideInList(acutatorsList)
+            if check_dict["inside"] == False  and self.preference_warning == False:
+                # dialog = customtkinter.CTkInputDialog(master=None, text="You've not selected an inside actuator,\nyour goal couldn't be reached", title="Warning Goal")
+                self.preference_warning = True
+                self.popupBonus("You've not selected an inside actuator,\nyour goal couldn't be reached")
+            elif check_dict["outside"] == False and self.preference_warning == False :
+                # dialog = customtkinter.CTkInputDialog(master=None, text="You've not selected an outside actuator,\nyour goal couldn't be reached", title="Warning Goal")
+                self.preference_warning = True
+                self.popupBonus("You've not selected an outisde actuator,\nyour goal couldn't be reached")
+            else :
+                if(saveNewPreference(namePreference, self.property, str(int(self.slider.get())), acutatorsList)):
                     self.destroy()
                     app.refresh()
-                    break
-        
+                else: 
+                    while(True):
+                        dialog = customtkinter.CTkInputDialog(master=None, text="Preference name already used \n choose another one:", title="Error Name")
+                        name = str(dialog.get_input()).lower().replace(" ", "_") 
+                        if(name!="" and name!="none" and saveNewPreference(name, self.property,str(int(self.slider.get())), acutatorsList)):
+                            self.destroy()
+                            app.refresh()
+                            break
+    
+    def popupBonus(self, text):
+        window_sensor = Popup()
+        window_sensor.mainloop()
             
 
 class Remove(customtkinter.CTk):

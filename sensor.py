@@ -113,33 +113,11 @@ def simulateSensorValues():
     # print(city)
 
     location,day,time,skyinfo,tempOutisde, wind =weather("Bari"+ " weather")
-    
     db = int(decibelValue(wind))
     temperatureInside = int(temperatureInsideHome(tempOutisde))
     brightness = int(brightnessValue(skyinfo, time))
    
     return location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness
-
-# def changeSensorByPrefrence(preference):
-#     query_list = query("preferencesInstance("+preference+", Y, Desired, _)")
-#     print("cerco i sensori precedenti")
-#     print(query_list)
-#     if bool(query_list):
-#         for i in range(len(query_list)):
-#             if type(query_list[0]['Y']) == str:
-#                 print(query_list[0]['Y'])
-#                 if preference == "turn_off" :
-#                     location,day,time,skyinfo,tempOutisde,wind,db,temperatureInside,brightness=getSensorsValues()
-#                     type_preference = query_list[i]['Y']
-#                     value_preference = query_list[i]['Desired']
-#                     location = "inside"
-#                     setSensorValueByType(type_preference,location,value_preference)
-#                     setSensorValueByType("temp", location, str(temperatureInside))
-#                 else:                    
-#                     type_preference = query_list[i]['Y']
-#                     value_preference = query_list[i]['Desired']
-#                     location = "inside"
-#                     setSensorValueByType(type_preference,location,value_preference)
 
 def changeSensorByActuators():
     type_list = sorted(getAllType(), key=str.lower)
@@ -165,7 +143,6 @@ def changeSensorByActuators():
             if max_value > value_sensor_outside:
                 max_value = value_sensor_outside
         
-        print(max_value)
         if max_value == 0 and typeId == 'temp':
             _,_,_,_,_,_,_,temperatureInside,_=getSensorsValues()
             setSensorValueByType(typeId, "inside", str(temperatureInside))
