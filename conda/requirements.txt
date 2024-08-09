@@ -1,0 +1,7 @@
+beautifulsoup4==4.12.3
+customtkinter==5.2.2
+darkdetect==0.8.0
+packaging==24.1
+pyswip==0.2.10
+soupsieve==2.5
+tk==0.1.0

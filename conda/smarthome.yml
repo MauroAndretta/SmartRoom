@@ -1,0 +1,11 @@
+name: smarthome
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip: 
+    - tk
+    - customtkinter
+    - pyswip
+    - beautifulsoup4
